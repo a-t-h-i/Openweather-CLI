@@ -2,8 +2,8 @@ Today's weather in CAPE TOWN
 +----------+-------------+---------------+
 |   Time   | Temperature |  Description  |
 +----------+-------------+---------------+
-|   Now    |    17.42    |   light rain  |
-| 21:00:00 |    17.29    |   light rain  |
-| 00:00:00 |    17.26    | moderate rain |
-| 03:00:00 |    17.06    |   light rain  |
+|   Now    |    17.16    | moderate rain |
+| 00:00:00 |    17.16    | moderate rain |
+| 03:00:00 |    17.13    |   light rain  |
+| 06:00:00 |    16.87    |   light rain  |
 +----------+-------------+---------------+

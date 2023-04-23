@@ -5,11 +5,9 @@ from prettytable import PrettyTable
 
 def should_update(city):
     if has_city_file(city):
-        files = os.listdir("data")
-
-        for file in files:
+        for file in os.listdir("data"):
             if city in file:
-                file_time = os.path.getatime(f"data/{file}")
+                file_time = os.path.getmtime(f"data/{file}")
                 now = time.time()
                 # Returns either true or false.
                 return (now - file_time) > (3 * 3600)
@@ -115,9 +113,11 @@ def save_to_file(city, lat_lon, data):
     formatted_name = f"{city.upper()}_{lat_lon[0]}_{lat_lon[1]}.txt"
 
     if has_city_file(city):
-        # Update the file
-        print("Put code to update the file here :P")
-        time.sleep(4)
+        for item in os.listdir("data"):
+            if city in item:
+                f = open(f"data/{item}", "w")
+                f.write(data)
+                f.close()
     else:
         with open(f"data/{formatted_name}", "w") as f:
             f.write(data)
