@@ -1,0 +1,9 @@
+Today's weather in NAIROBI
++----------+-------------+-----------------+
+|   Time   | Temperature |   Description   |
++----------+-------------+-----------------+
+|   Now    |    18.44    | overcast clouds |
+| 00:00:00 |    18.44    | overcast clouds |
+| 03:00:00 |     17.5    | overcast clouds |
+| 06:00:00 |    19.24    |    light rain   |
++----------+-------------+-----------------+

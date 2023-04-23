@@ -1,0 +1,9 @@
+Today's weather in LIVERPOOL
++----------+-------------+-----------------+
+|   Time   | Temperature |   Description   |
++----------+-------------+-----------------+
+|   Now    |     8.29    |  broken clouds  |
+| 00:00:00 |     8.29    |    light rain   |
+| 03:00:00 |     7.26    |  broken clouds  |
+| 06:00:00 |     5.96    | overcast clouds |
++----------+-------------+-----------------+
