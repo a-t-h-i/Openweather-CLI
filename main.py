@@ -3,7 +3,7 @@ from os.path import exists
 from prettytable import PrettyTable
 
 
-def check(city):
+def should_update(city):
     if has_city_file(city):
         files = os.listdir("data")
 
@@ -11,10 +11,10 @@ def check(city):
             if city in file:
                 file_time = os.path.getatime(f"data/{file}")
                 now = time.time()
-                # Returns either true or false. True if the file is less than 3 hours old, vice versa
-                return not (now - file_time) < (3 * 3600)
+                # Returns either true or false.
+                return (now - file_time) > (3 * 3600)
     else:
-        return False
+        return True
 
 
 def has_env_file():
@@ -39,6 +39,7 @@ def set_env_variable():
 
 def get_city_name(key):
     while True:
+        os.system("clear")
         city = input("Enter name of city:\n").upper()
         result = requests.get(
             f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={key}"
@@ -48,7 +49,7 @@ def get_city_name(key):
             continue
         else:
             break
-    return city
+    return city.upper()
 
 
 def has_city_file(city):
@@ -115,7 +116,8 @@ def save_to_file(city, lat_lon, data):
 
     if has_city_file(city):
         # Update the file
-        pass
+        print("Put code to update the file here :P")
+        time.sleep(4)
     else:
         with open(f"data/{formatted_name}", "w") as f:
             f.write(data)
@@ -182,13 +184,13 @@ def main():
     key = os.environ["KEY"]
     city = get_city_name(key)
 
-    if not check(city):
+    if should_update(city):
         lat_lon = get_coordinates(city, key)
         current_weather = get_current_weather(key, lat_lon)
         three_hour_forecast = get_3_hourly_forecast(lat_lon, key)
         pretty_data = prettify_data(city, current_weather, three_hour_forecast)
         save_to_file(city, lat_lon, pretty_data)
-        
+
     os.system("clear")
     display(city)
 

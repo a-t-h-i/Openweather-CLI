@@ -1,0 +1,9 @@
+Today's weather in PORT ELIZABETH
++----------+-------------+------------------+
+|   Time   | Temperature |   Description    |
++----------+-------------+------------------+
+|   Now    |    22.06    |    clear sky     |
+| 21:00:00 |    21.47    | scattered clouds |
+| 00:00:00 |    20.97    |    light rain    |
+| 03:00:00 |    19.79    |    light rain    |
++----------+-------------+------------------+
