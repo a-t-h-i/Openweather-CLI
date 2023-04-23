@@ -1,12 +1,18 @@
-import requests, json, os
+import requests, json, os, time
 from os.path import exists
+from prettytable import PrettyTable
 
 
 def check(city):
-   
     if has_city_file(city):
-        # Check if the file is not older than 180 minutes
-        return True
+        files = os.listdir("data")
+
+        for file in files:
+            if city in file:
+                file_time = os.path.getatime(f"data/{file}")
+                now = time.time()
+                # Returns either true or false. True if the file is less than 3 hours old, vice versa
+                return not (now - file_time) < (3 * 3600)
     else:
         return False
 
@@ -24,15 +30,25 @@ def save_to_env(key):
         f.write(f"KEY={key}")
 
 
-def read_env():
+def set_env_variable():
     with open(".env", "r") as f:
         for line in f.readlines():
-            key, value = line.split('=')
-    return value
+            key, value = line.split("=")
+            os.environ[key] = value
 
 
-def get_city_name():
-    return input("Enter name of city:\n")
+def get_city_name(key):
+    while True:
+        city = input("Enter name of city:\n").upper()
+        result = requests.get(
+            f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={key}"
+        ).json()
+
+        if result["cod"] == "404":
+            continue
+        else:
+            break
+    return city
 
 
 def has_city_file(city):
@@ -48,13 +64,10 @@ def get_coordinates(city, key):
     result = requests.get(
         f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={key}"
     ).text
-    
-    if len(result) < 3:
-        return (0,0)
-    
+
     lat = json.loads(result)[0]["lat"]
     lon = json.loads(result)[0]["lon"]
-    
+
     return (lat, lon)
 
 
@@ -62,53 +75,99 @@ def get_current_weather(key, lat_lon):
     result = requests.get(
         f"https://api.openweathermap.org/data/2.5/weather?lat={lat_lon[0]}&lon={lat_lon[1]}&appid={key}&units=metric"
     ).text
+
     current_temp = json.loads(result)["main"]["temp"]
     description = json.loads(result)["weather"][0]["description"]
-    return f"Temp: {current_temp}\nDescription: {description}"
+
+    return {"Temp": current_temp, "Description": description}
 
 
 def get_3_hourly_forecast(lat_lon, key):
     result = requests.get(
         f"https://api.openweathermap.org/data/2.5/forecast?lat={lat_lon[0]}&lon={lat_lon[1]}&cnt=5&appid={key}&units=metric"
     ).text
+
     data = json.loads(result)["list"]
-    
-    first = {"Temp": data[0]["main"]["temp"],
-             "Description": data[0]["weather"][0]["description"],
-             "Time": data[0]["dt_txt"]}
-    
-    second = {"Temp": data[0]["main"]["temp"],
-             "Description": data[0]["weather"][0]["description"],
-             "Time": data[0]["dt_txt"]}
-    
-    third =  {"Temp": data[0]["main"]["temp"],
-             "Description": data[0]["weather"][0]["description"],
-             "Time": data[0]["dt_txt"]}
-    
+
+    first = {
+        "Temp": data[0]["main"]["temp"],
+        "Description": data[0]["weather"][0]["description"],
+        "Time": data[0]["dt_txt"].split(" ")[1],
+    }
+
+    second = {
+        "Temp": data[1]["main"]["temp"],
+        "Description": data[1]["weather"][0]["description"],
+        "Time": data[1]["dt_txt"].split(" ")[1],
+    }
+
+    third = {
+        "Temp": data[2]["main"]["temp"],
+        "Description": data[2]["weather"][0]["description"],
+        "Time": data[2]["dt_txt"].split(" ")[1],
+    }
+
     return (first, second, third)
 
 
-def save_to_file(city, current_weather, three_hour_forecast):
+def save_to_file(city, lat_lon, data):
+    formatted_name = f"{city.upper()}_{lat_lon[0]}_{lat_lon[1]}.txt"
 
-    print("Save to file")
-    pass
+    if has_city_file(city):
+        # Update the file
+        pass
+    else:
+        with open(f"data/{formatted_name}", "w") as f:
+            f.write(data)
 
 
-def update_city_file(city, current_weather, five_day_weather):
-    print("Update city file")
-    pass
+def prettify_data(city, current_weather, three_hour_forecast):
+    table = PrettyTable()
+
+    table.field_names = ["Time", "Temperature", "Description"]
+    table.add_row(["Now", current_weather["Temp"], current_weather["Description"]])
+    table.add_row(
+        [
+            three_hour_forecast[0]["Time"],
+            three_hour_forecast[0]["Temp"],
+            three_hour_forecast[0]["Description"],
+        ]
+    )
+
+    table.add_row(
+        [
+            three_hour_forecast[1]["Time"],
+            three_hour_forecast[1]["Temp"],
+            three_hour_forecast[1]["Description"],
+        ]
+    )
+
+    table.add_row(
+        [
+            three_hour_forecast[2]["Time"],
+            three_hour_forecast[2]["Temp"],
+            three_hour_forecast[2]["Description"],
+        ]
+    )
+
+    return f"Today's weather in {city}\n{str(table)}"
 
 
-def display_data():
-    print("Display data :D")
-    pass
+def display(city):
+    files = os.listdir("data")
+
+    for file in files:
+        if city in file:
+            with open(f"data/{file}", "r") as f:
+                for line in f.readlines():
+                    print(line, end="")
+                print()
 
 
 def main():
     key, city = "", ""
 
     if not has_env_file():
-
         while True:
             key = get_api_key()
 
@@ -116,22 +175,23 @@ def main():
                 continue
             else:
                 break
-
         save_to_env(key)
 
-    key = read_env()
-    city = get_city_name()
+    set_env_variable()
+
+    key = os.environ["KEY"]
+    city = get_city_name(key)
 
     if not check(city):
         lat_lon = get_coordinates(city, key)
         current_weather = get_current_weather(key, lat_lon)
         three_hour_forecast = get_3_hourly_forecast(lat_lon, key)
-        save_to_file(city, current_weather, three_hour_forecast)
-    
-    print(current_weather)
-    print(three_hour_forecast)
-    display_data()
+        pretty_data = prettify_data(city, current_weather, three_hour_forecast)
+        save_to_file(city, lat_lon, pretty_data)
+        
+    os.system("clear")
+    display(city)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
