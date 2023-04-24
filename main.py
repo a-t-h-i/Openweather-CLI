@@ -122,7 +122,7 @@ def get_current_weather(key, lat_lon):
 
     Args:
         key {str}: api key
-        lat_lon {tuple}: tuple that has lat and 0 and lon at 1
+        lat_lon {tuple}: tuple that has lat at 0 and lon at 1
 
     Returns:
         {dict}: map wich contains current weather
@@ -141,7 +141,7 @@ def get_3_hourly_forecast(lat_lon, key):
     """Gets a forcast for every three hours from the current time
 
     Args:
-        lat_lon {tuple}: tuple that has lat and 0 and lon at 1
+        lat_lon {tuple}: tuple that has lat at 0 and lon at 1
         key {str}: api key
 
     Returns:
@@ -179,7 +179,7 @@ def save_to_file(city, lat_lon, data):
 
     Args:
         city {str}: name of city
-        lat_lon {tuple}: tuple that has lat and 0 and lon at 1
+        lat_lon {tuple}: tuple that has lat at 0 and lon at 1
         data {str}: weather data that has been formatted to appeal to the human eye.
     """
     formatted_name = f"{city}_{lat_lon[0]}_{lat_lon[1]}.txt"
