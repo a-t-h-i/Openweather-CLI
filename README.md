@@ -1,5 +1,5 @@
 # Openweather-CLI
-Just a very simple weather program made with Python, the program makes use of the openweather api to get the lates weather data for any given city on earth (Sorry aliens, earth only :P).
+Just a very simple weather program made with Python, it get the lates weather data for any given city on earth (Sorry aliens, earth only :P).
 
 First clone the project: `git@github.com:a-t-h-i/Openweather-CLI.git`
 
