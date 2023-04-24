@@ -5,7 +5,7 @@ First clone the project: `git@github.com:a-t-h-i/Openweather-CLI.git`
 
 Then cd to the cloned project by running: `cd Openweather-CLI`
 
-Run this code to setup a virtual environment and activate it: `python3 -m venv env && source env/bin/activate`
+Run this command to setup a virtual environment and activate it: `python3 -m venv env && source env/bin/activate`
 
 Now install them requirements using: `pip install -r requirements.txt`
 
