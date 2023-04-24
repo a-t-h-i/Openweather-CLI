@@ -9,4 +9,4 @@ Run this command to setup a virtual environment and activate it: `python3 -m ven
 
 Now install them requirements using: `pip install -r requirements.txt`
 
-Finally you get to run this masterpiece (JK  >_<): `python3 main.py`
+Finally you get to run this masterpiece (JK  >_<) using this command: `python3 main.py`
